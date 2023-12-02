@@ -10,11 +10,13 @@ Game 5: 6 red, 1 blue, 3 green; 2 blue, 1 red, 2 green`;
 
 // ---------------------------- solution ----------------------------
 
-const bag = {
-  red: 12,
-  green: 13,
-  blue: 14,
-};
+const bag = new Map(
+  Object.entries({
+    red: 12,
+    green: 13,
+    blue: 14,
+  }),
+);
 
 const parseInput = (rawInput: string) =>
   rawInput.split("\n").map((line) => {
@@ -33,19 +35,21 @@ const parseInput = (rawInput: string) =>
 
 const part1 = (rawInput: string) => {
   const input = parseInput(rawInput);
-  const possibleGames = [];
+  const possibleGames: number[] = [];
 
   input.forEach((game) => {
     const { gameNumber, rounds } = game;
     let isGamePossible = true;
 
-    rounds.forEach((round) => {
-      round.forEach((dice) => {
+    rounds.every((round) => {
+      round.every((dice) => {
         const [diceCount, diceColor] = dice.split(" ");
-        const availableDiceCount = bag[diceColor];
+        const availableDiceCount = bag.get(diceColor) ?? 0;
         const isPossible = Number(diceCount) <= availableDiceCount;
         if (!isPossible) isGamePossible = false;
+        return isGamePossible; // continue if possible
       });
+      return isGamePossible; // continue if possible
     });
 
     if (isGamePossible) possibleGames.push(gameNumber);
