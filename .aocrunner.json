@@ -39,13 +39,13 @@
           "536667",
           "599580"
         ],
-        "time": 5.371167
+        "time": 2.947042
       },
       "part2": {
-        "solved": false,
-        "result": null,
+        "solved": true,
+        "result": "75847567",
         "attempts": [],
-        "time": null
+        "time": 5.82425
       }
     },
     {
