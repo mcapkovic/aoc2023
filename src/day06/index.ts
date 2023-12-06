@@ -17,7 +17,7 @@ Distance:  9  40  200`;
 // 6 6
 // 7 0
 
-// 2,3,4,5
+// winner holds 2,3,4,5
 
 // ---------------------------- solution ----------------------------
 
@@ -60,7 +60,15 @@ const part1 = (rawInput: string) => {
 const part2 = (rawInput: string) => {
   const input = parseInput(rawInput);
 
-  return;
+  const raceTime = Number(input[0].join(""));
+  const currentRecord = Number(input[1].join(""));
+
+  const distances = getDistances(raceTime);
+  const winningRaceTimes = distances.filter(
+    (distance) => distance > currentRecord,
+  );
+
+  return winningRaceTimes.length;
 };
 
 // ---------------------------- config ----------------------------
@@ -79,15 +87,15 @@ const part2Config = {
   tests: [
     {
       input: example1,
-      expected: "",
+      expected: 71503,
     },
   ],
   solution: part2,
 };
 
 run({
-  part1: part1Config,
-  // part2: part2Config,
+  // part1: part1Config,
+  part2: part2Config,
   trimTestInputs: true,
   // onlyTests: true,
   onlyTests: false,
