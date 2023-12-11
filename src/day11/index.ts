@@ -132,10 +132,48 @@ const part1 = (rawInput: string) => {
   return distances.reduce((acc, curr) => acc + curr, 0);
 };
 
+const MULTIPLIER = 1000000;
+
+function addRows2(galaxies: [number, number][], emptyRows: number[]) {
+  const newGalaxies: [number, number][] = galaxies.map((galaxy) => {
+    const [row, col] = galaxy;
+    const rowIncrement = emptyRows.filter((emptyRow) => emptyRow < row).length;
+    const newRow = row - rowIncrement + rowIncrement * MULTIPLIER;
+    return [newRow, col];
+  });
+
+  return newGalaxies;
+}
+
+function addColumns2(galaxies: [number, number][], emptyColumns: number[]) {
+  const newGalaxies: [number, number][] = galaxies.map((galaxy) => {
+    const [row, col] = galaxy;
+    const colIncrement = emptyColumns.filter(
+      (emptyCol) => emptyCol < col,
+    ).length;
+
+    const newCol = col - colIncrement + colIncrement * MULTIPLIER;
+    return [row, newCol];
+  });
+
+  return newGalaxies;
+}
+
 const part2 = (rawInput: string) => {
   const input = parseInput(rawInput);
+  console.log(input);
 
-  return;
+  const emptyRows = findEmptyRows(input);
+  const emptyColumns = findEmptyColumns(input);
+  const galaxies2: [number, number][] = getGalaxies(input);
+
+  const galaxiesExpandedRows = addRows2(galaxies2, emptyRows);
+  const galaxiesExpanded = addColumns2(galaxiesExpandedRows, emptyColumns);
+
+  const galaxyPairs = getGalaxyPairs(galaxiesExpanded);
+  const distances = getDistances(galaxyPairs);
+
+  return distances.reduce((acc, curr) => acc + curr, 0);
 };
 
 // ---------------------------- config ----------------------------
@@ -154,15 +192,15 @@ const part2Config = {
   tests: [
     {
       input: example1,
-      expected: "",
+      expected: 374,
     },
   ],
   solution: part2,
 };
 
 run({
-  part1: part1Config,
-  // part2: part2Config,
+  // part1: part1Config,
+  part2: part2Config,
   trimTestInputs: true,
   // onlyTests: true,
   onlyTests: false,
