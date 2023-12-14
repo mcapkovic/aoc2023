@@ -187,9 +187,9 @@
     {
       "part1": {
         "solved": false,
-        "result": null,
+        "result": "800",
         "attempts": [],
-        "time": null
+        "time": 0.851208
       },
       "part2": {
         "solved": false,
@@ -200,10 +200,10 @@
     },
     {
       "part1": {
-        "solved": false,
-        "result": null,
+        "solved": true,
+        "result": "110821",
         "attempts": [],
-        "time": null
+        "time": 14.051292
       },
       "part2": {
         "solved": false,
