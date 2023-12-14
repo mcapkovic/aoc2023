@@ -75,14 +75,42 @@ const part1 = (rawInput: string) => {
   return count;
 };
 
+function transpose(a) {
+  return Object.keys(a[0]).map(function (c) {
+    return a.map(function (r) {
+      return r[c];
+    });
+  });
+}
+
 const part2 = (rawInput: string) => {
   const input = parseInput(rawInput);
 
-  const movedRocks = getMovedRocks(input);
+  // const matrix = input.map((line) => line.split(""));
+  // const transposedMatrix = transpose(matrix).map((line) =>
+  //   line.reverse().join(""),
+  // );
 
-  // for (let i = 0; i < 1000000000; i++) {
-  //   console.log("i", i);
-  // }
+  // input.forEach((line) => console.log(line));
+  // console.log("transposedMatrix");
+  // transposedMatrix.forEach((line) => console.log(line));
+
+
+  let rockPositions = [...input]
+  // rotate 4 times (one cycle)
+  for(let i = 0; i < 4; i++) {
+    const movedRocks = getMovedRocks(rockPositions);
+    const matrix = movedRocks.map((line) => line.split(""));
+    const transposedMatrix = transpose(matrix);
+    rockPositions = transposedMatrix.map((line) => line.reverse().join(""));
+  }
+
+  console.log("rockPositions");
+  rockPositions.forEach((line) => console.log(line));
+
+  // const movedRocks = getMovedRocks(input);
+
+
 
   return;
 };
