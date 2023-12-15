@@ -5,6 +5,7 @@ import run from "aocrunner";
 const example1 = `rn=1,cm-,qp=3,cm=2,qp-,pc=4,ot=9,ab=5,pc-,pc=6,ot=7`;
 
 // ---------------------------- solution ----------------------------
+const parseInput = (rawInput: string) => rawInput.split(",");
 
 function getHashValue(symbol: string) {
   return symbol.charCodeAt(0);
@@ -14,9 +15,7 @@ function getHashValues(value: string) {
   return value.split("").map(getHashValue);
 }
 
-const parseInput = (rawInput: string) => rawInput.split(",");
-
-function HASHAlgorithm(input: string) {
+function hashAlgorithm(input: string) {
   const hashValues = getHashValues(input);
   let subValue = 0;
 
@@ -38,53 +37,51 @@ const part1 = (rawInput: string) => {
   const input = parseInput(rawInput);
   console.log(input);
 
-  const stepsValues = input.map(HASHAlgorithm);
+  const stepsValues = input.map(hashAlgorithm);
 
   return stepsValues.reduce((acc, value) => acc + value, 0);
 };
+
+function createLens(label: string, focalLength: string) {
+  return `${label} ${focalLength}`;
+}
+
+function getLabel(value: string) {
+  return value.split(" ")[0];
+}
 
 const part2 = (rawInput: string) => {
   const input = parseInput(rawInput);
   console.log(input);
 
   // create 256 empty arrays
-  const objective = Array.from(Array(256), () => []);
+  const objective: string[][] = Array.from(Array(256), () => []);
 
   input.forEach((value) => {
-    console.log(value);
+    const isRemoveOperation = value.includes("-");
+    const separator = isRemoveOperation ? "-" : "=";
+    const [label, focalLength] = value.split(separator);
+    const boxIndex = hashAlgorithm(label);
+    let box = [...objective[boxIndex]];
 
-    if (value.includes("-")) {
-      const label = value.split("-")[0];
-
-      const boxIndex = HASHAlgorithm(label);
-      console.log(boxIndex);
-      let box = [...objective[boxIndex]];
+    if (isRemoveOperation) {
       box = box.filter((item) => getLabel(item) !== label);
-      objective[boxIndex] = box;
     } else {
-      const [label, focalLength] = value.split("=");
-      const boxIndex = HASHAlgorithm(label);
-      console.log(boxIndex);
-      let box = [...objective[boxIndex]];
-      // box = box.filter((item) => getLabel(item) !== label);
-      // box.push(`${label} ${focalLength}`);
-
       const labels = box.map(getLabel);
       const slotIndex = labels.indexOf(label);
+      const lens = createLens(label, focalLength);
 
       if (slotIndex === -1) {
-        box.push(`${label} ${focalLength}`);
+        box.push(lens);
       } else {
-        box[slotIndex] = `${label} ${focalLength}`;
+        box[slotIndex] = lens;
       }
-      objective[boxIndex] = box;
     }
+
+    objective[boxIndex] = box;
   });
 
-  console.log(objective);
-
   let focusingPower = 0;
-
   objective.forEach((box, boxIndex) => {
     if (box.length === 0) return;
 
@@ -93,17 +90,13 @@ const part2 = (rawInput: string) => {
       const a = boxIndex + 1;
       const slotNumber = slotIndex + 1;
 
-      const power = a * slotNumber * focalLength;
+      const power = a * slotNumber * Number(focalLength);
       focusingPower = focusingPower + power;
     });
   });
 
   return focusingPower;
 };
-
-function getLabel(value: string) {
-  return value.split(" ")[0];
-}
 
 // ---------------------------- config ----------------------------
 
@@ -131,6 +124,6 @@ run({
   // part1: part1Config,
   part2: part2Config,
   trimTestInputs: true,
-  onlyTests: true,
-  // onlyTests: false,
+  // onlyTests: true,
+  onlyTests: false,
 });
