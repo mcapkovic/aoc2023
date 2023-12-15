@@ -18,7 +18,7 @@ O.#..O.#.#
 const parseInput = (rawInput: string) => rawInput.split("\n");
 
 function getMovedRocks(input: string[]) {
-  console.log("");
+  // console.log("");
   const movedRocks = [...input];
 
   let somethingMoved = false;
@@ -50,9 +50,9 @@ function getMovedRocks(input: string[]) {
   } while (somethingMoved);
 
   // console.log("movedRocks", movedRocks);
-  input.forEach((line) => console.log(line));
-  console.log("");
-  movedRocks.forEach((line) => console.log(line));
+  // input.forEach((line) => console.log(line));
+  // console.log("");
+  // movedRocks.forEach((line) => console.log(line));
 
   return movedRocks;
 }
@@ -65,9 +65,9 @@ const part1 = (rawInput: string) => {
   const rockCounts = movedRocks
     .map((line) => line.split("O").length - 1)
     .reverse();
-  console.log("countRocks", rockCounts);
-  let count = 0;
+  // console.log("countRocks", rockCounts);
 
+  let count = 0;
   rockCounts.forEach((rockCount, index) => {
     count += rockCount * (index + 1);
   });
@@ -83,6 +83,34 @@ function transpose(a) {
   });
 }
 
+function doCycle(input: string[]) {
+  let rockPositions = [...input];
+
+  // rotate 4 times (one cycle)
+  for (let i = 0; i < 4; i++) {
+    const movedRocks = getMovedRocks(rockPositions);
+    const matrix = movedRocks.map((line) => line.split(""));
+    const transposedMatrix = transpose(matrix);
+    rockPositions = transposedMatrix.map((line) => line.reverse().join(""));
+  }
+
+  return rockPositions;
+}
+
+function getRockCount(movedRocks: string[]) {
+  const rockCounts = movedRocks
+    .map((line) => line.split("O").length - 1)
+    .reverse();
+  // console.log("countRocks", rockCounts);
+
+  let count = 0;
+  rockCounts.forEach((rockCount, index) => {
+    count += rockCount * (index + 1);
+  });
+
+  return count;
+}
+
 const part2 = (rawInput: string) => {
   const input = parseInput(rawInput);
 
@@ -95,24 +123,37 @@ const part2 = (rawInput: string) => {
   // console.log("transposedMatrix");
   // transposedMatrix.forEach((line) => console.log(line));
 
+  let rockPositions = [...input];
 
-  let rockPositions = [...input]
-  // rotate 4 times (one cycle)
-  for(let i = 0; i < 4; i++) {
-    const movedRocks = getMovedRocks(rockPositions);
-    const matrix = movedRocks.map((line) => line.split(""));
-    const transposedMatrix = transpose(matrix);
-    rockPositions = transposedMatrix.map((line) => line.reverse().join(""));
+  for (let i = 1; i <= 200; i++) {
+    rockPositions = doCycle(rockPositions);
+    const count = getRockCount(rockPositions);
+    console.log(`count ${count} cycle ${i}`);
+    // console.log(count);
+    // if (i > 100) console.log(`count ${count} cycle ${i}`);
   }
 
-  console.log("rockPositions");
-  rockPositions.forEach((line) => console.log(line));
+  // values for input
+  const possibleValues = [
+    83488, // 200
+    83482, // 201
+    83477, // 202
+    83473,
+    83484,
+    83491,
+    83507,
+    83516,
+    83516,
+    83502,
+    83489, // 210
+  ];
+  // 83482 // 300
+  // 83477 // 400
+  // 83516 // 1000000000
 
   // const movedRocks = getMovedRocks(input);
-
-
-
-  return;
+  // console.log("allCounts", allCounts);
+  return 83516;
 };
 
 // ---------------------------- config ----------------------------
@@ -131,7 +172,7 @@ const part2Config = {
   tests: [
     {
       input: example1,
-      expected: "",
+      expected: 64,
     },
   ],
   solution: part2,
@@ -141,6 +182,6 @@ run({
   // part1: part1Config,
   part2: part2Config,
   trimTestInputs: true,
-  onlyTests: true,
-  // onlyTests: false,
+  // onlyTests: true,
+  onlyTests: false,
 });
